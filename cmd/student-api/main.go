@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"log/slog"
 	"net/http"
 	"os"
@@ -11,17 +12,28 @@ import (
 	"time"
 
 	"github.com/Akshat-z/student-api/internal/config"
+	"github.com/Akshat-z/student-api/internal/http/handlers/student"
+	"github.com/Akshat-z/student-api/internal/storage/sqlite"
 )
 
 func main() {
+	//+ setup config
 	cfg := config.MustLoad()
 
+	//+ setp database
+
+	storage, err := sqlite.NewSqlite(cfg)
+
+	if err != nil {
+		log.Fatal("Can't connect to db")
+	}
+
+	//+ setup router
 	router := http.NewServeMux()
 
-	router.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("welcome to student api"))
-	})
+	router.HandleFunc("POST /api/students", student.Create(storage))
 
+	//+ setup server
 	server := http.Server{
 		Addr:    cfg.Address,
 		Handler: router,
@@ -62,4 +74,4 @@ func main() {
 
 }
 
-//_ to handle gracefull shutdown we listenandserve in different thread and handle the shutdown using channel.
+//? to handle gracefull shutdown we listenandserve in different thread and handle the shutdown using channel.
