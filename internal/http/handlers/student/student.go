@@ -40,5 +40,3 @@ func Create(storage storage.Storage) http.HandlerFunc {
 		response.WriteJson(w, http.StatusAccepted, map[string]int64{"Id": creationId})
 	}
 }
-
-//_ sql injection

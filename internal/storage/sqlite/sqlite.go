@@ -33,7 +33,7 @@ func NewSqlite(cfg *config.Config) (*Sqlite, error) {
 
 func (s *Sqlite) CreateStudent(name string, email string, age int) (int64, error) {
 
-	stmt, err := s.Db.Prepare("INSERT INTO students (name, email, age) VALUES (?, ?, ?)")
+	stmt, err := s.Db.Prepare("INSERT INTO students (name, email, age) VALUES (?, ?, ?)") //_ sql injection
 	if err != nil {
 		return 0, err
 	}
